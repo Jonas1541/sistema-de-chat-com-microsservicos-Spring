@@ -8,11 +8,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.util.Collection;
 import java.util.Collections;
 
 @Entity
+@Table(name = "tb_users")
 public class User implements UserDetails {
 
     @Id

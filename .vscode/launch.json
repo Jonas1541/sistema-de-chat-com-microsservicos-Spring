@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "RecordApiApplication",
+            "request": "launch",
+            "mainClass": "com.integracao_de_sistemas.record_api.RecordApiApplication",
+            "projectName": "record-api"
+        },
+        {
+            "type": "java",
+            "name": "ReceiveSendApiApplication",
+            "request": "launch",
+            "mainClass": "com.integracao_de_sistemas.receive_send_api.ReceiveSendApiApplication",
+            "projectName": "receive-send-api"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-AuthApiApplication<auth-api>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.integracao_de_sistemas.auth_api.AuthApiApplication",
+            "projectName": "auth-api",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
