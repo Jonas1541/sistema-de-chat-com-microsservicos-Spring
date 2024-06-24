@@ -41,6 +41,8 @@ public class MessageController {
         }
         // Envia mensagem para a fila
         rabbitTemplate.convertAndSend("messageQueue", messageDTO);
+        // Salva a mensagem na tabela de histórico
+        recordClient.saveMessage(messageDTO);
         return ResponseEntity.ok("message sent with success");
     }
 
@@ -50,7 +52,7 @@ public class MessageController {
         if (!isAuthenticated) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("not auth");
         }
-        // Lógica para processar mensagens (não necessário com RabbitMQ)
+        // Processa mensagens da fila (não implementado aqui, mas seria necessário um listener do RabbitMQ)
         return ResponseEntity.ok("ok");
     }
 

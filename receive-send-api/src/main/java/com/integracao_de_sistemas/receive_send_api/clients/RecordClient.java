@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.integracao_de_sistemas.receive_send_api.DTOs.MessageDTO;
 import com.integracao_de_sistemas.receive_send_api.models.Message;
 
-@FeignClient(name = "record-api", url = "${auth-api.url}")
+@FeignClient(name = "record-api", url = "${record-api.url}")
 public interface RecordClient {
 
     @PostMapping("/record/message")
