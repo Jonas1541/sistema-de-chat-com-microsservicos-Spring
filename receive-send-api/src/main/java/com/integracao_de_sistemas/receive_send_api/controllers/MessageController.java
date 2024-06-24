@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import com.integracao_de_sistemas.receive_send_api.DTOs.MessageDTO;
 import com.integracao_de_sistemas.receive_send_api.DTOs.WorkerDTO;
@@ -29,6 +30,9 @@ public class MessageController {
     @Autowired
     private RecordClient recordClient;
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
     @PostMapping
     public ResponseEntity<?> sendMessage(@RequestHeader("Authorization") String token, @RequestBody MessageDTO messageDTO) {
         boolean isAuthenticated = authClient.verifyToken(token, messageDTO.getUserIdSend());
@@ -36,8 +40,7 @@ public class MessageController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("not auth");
         }
         // Envia mensagem para a fila
-        // Lógica para enviar a mensagem para a fila
-        recordClient.saveMessage(messageDTO);
+        rabbitTemplate.convertAndSend("messageQueue", messageDTO);
         return ResponseEntity.ok("message sent with success");
     }
 
@@ -47,8 +50,7 @@ public class MessageController {
         if (!isAuthenticated) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("not auth");
         }
-        // Lê todas as mensagens de um determinado canal e transfere para a tabela de message
-        // Lógica para ler mensagens da fila e salvar na tabela de messages via RecordAPI
+        // Lógica para processar mensagens (não necessário com RabbitMQ)
         return ResponseEntity.ok("ok");
     }
 
@@ -62,4 +64,3 @@ public class MessageController {
         return ResponseEntity.ok(messages);
     }
 }
-

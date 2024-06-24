@@ -1,6 +1,9 @@
 package com.integracao_de_sistemas.auth_api.DTOs;
 
-public class LoginResponseDTO {
+import java.io.Serializable;
+
+public class LoginResponseDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String token;
 
     public LoginResponseDTO(String token) {

@@ -1,6 +1,9 @@
 package com.integracao_de_sistemas.receive_send_api.DTOs;
 
-public class MessageDTO {
+import java.io.Serializable;
+
+public class MessageDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     
     private Long userIdSend;
     private Long userIdReceive;

@@ -1,6 +1,9 @@
 package com.integracao_de_sistemas.auth_api.DTOs;
 
-public class AuthenticationDTO {
+import java.io.Serializable;
+
+public class AuthenticationDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private String login;
     private String password;

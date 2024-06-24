@@ -5,10 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.integracao_de_sistemas.receive_send_api.config.FeignClientConfig;
 import com.integracao_de_sistemas.receive_send_api.models.User;
 
-@FeignClient(name = "auth-api", url = "${auth-api.url}", configuration = FeignClientConfig.class)
+@FeignClient(name = "auth-api", url = "${auth-api.url}")
 public interface AuthClient {
 
     @GetMapping("/auth/token")
