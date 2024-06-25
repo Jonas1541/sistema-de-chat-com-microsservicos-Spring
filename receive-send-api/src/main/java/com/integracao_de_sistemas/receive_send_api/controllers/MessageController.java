@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
+import com.integracao_de_sistemas.receive_send_api.DTOs.AuthenticationDTO;
+import com.integracao_de_sistemas.receive_send_api.DTOs.LoginResponseDTO;
 import com.integracao_de_sistemas.receive_send_api.DTOs.MessageDTO;
 import com.integracao_de_sistemas.receive_send_api.DTOs.WorkerDTO;
 import com.integracao_de_sistemas.receive_send_api.clients.AuthClient;
@@ -33,6 +35,12 @@ public class MessageController {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody AuthenticationDTO loginRequest) {
+        LoginResponseDTO loginResponse = authClient.login(loginRequest);
+        return ResponseEntity.ok(loginResponse);
+    }
+
     @PostMapping
     public ResponseEntity<?> sendMessage(@RequestHeader("Authorization") String token, @RequestBody MessageDTO messageDTO) {
         boolean isAuthenticated = authClient.verifyToken(token, messageDTO.getUserIdSend());
@@ -46,6 +54,7 @@ public class MessageController {
         return ResponseEntity.ok("message sent with success");
     }
 
+    //Fazer esse cara salvar no banco no lugar do de cima
     @PostMapping("/worker")
     public ResponseEntity<?> processMessages(@RequestHeader("Authorization") String token, @RequestBody WorkerDTO workerDTO) {
         boolean isAuthenticated = authClient.verifyToken(token, workerDTO.getUserIdSend());
@@ -56,6 +65,7 @@ public class MessageController {
         return ResponseEntity.ok("ok");
     }
 
+    //Explicar pro chat que não tem o user aqui e ele tem só que pegar o valor da tabela memo
     @GetMapping
     public ResponseEntity<?> getMessages(@RequestHeader("Authorization") String token, @RequestParam("user") Long userId) {
         boolean isAuthenticated = authClient.verifyToken(token, userId);
