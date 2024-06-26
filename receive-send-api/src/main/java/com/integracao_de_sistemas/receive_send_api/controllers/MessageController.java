@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.core.Queue;
 
 import com.integracao_de_sistemas.receive_send_api.DTOs.AuthenticationDTO;
 import com.integracao_de_sistemas.receive_send_api.DTOs.LoginResponseDTO;
 import com.integracao_de_sistemas.receive_send_api.DTOs.MessageDTO;
+import com.integracao_de_sistemas.receive_send_api.DTOs.RegisterDTO;
 import com.integracao_de_sistemas.receive_send_api.DTOs.WorkerDTO;
 import com.integracao_de_sistemas.receive_send_api.clients.AuthClient;
 import com.integracao_de_sistemas.receive_send_api.clients.RecordClient;
@@ -35,6 +37,15 @@ public class MessageController {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    private Queue messageQueue;
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterDTO registerRequest) {
+        ResponseEntity<?> registerResponse = authClient.register(registerRequest);
+        return registerResponse;
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationDTO loginRequest) {
         LoginResponseDTO loginResponse = authClient.login(loginRequest);
@@ -49,23 +60,26 @@ public class MessageController {
         }
         // Envia mensagem para a fila
         rabbitTemplate.convertAndSend("messageQueue", messageDTO);
-        // Salva a mensagem na tabela de histórico
-        recordClient.saveMessage(messageDTO);
         return ResponseEntity.ok("message sent with success");
     }
 
-    //Fazer esse cara salvar no banco no lugar do de cima
     @PostMapping("/worker")
     public ResponseEntity<?> processMessages(@RequestHeader("Authorization") String token, @RequestBody WorkerDTO workerDTO) {
         boolean isAuthenticated = authClient.verifyToken(token, workerDTO.getUserIdSend());
         if (!isAuthenticated) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("not auth");
         }
-        // Processa mensagens da fila (não implementado aqui, mas seria necessário um listener do RabbitMQ)
-        return ResponseEntity.ok("ok");
+
+        // Processa mensagens da fila
+        MessageDTO messageDTO = (MessageDTO) rabbitTemplate.receiveAndConvert(messageQueue.getName());
+        if (messageDTO != null) {
+            recordClient.saveMessage(messageDTO);
+            return ResponseEntity.ok("Message processed and saved");
+        } else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No messages in the queue");
+        }
     }
 
-    //Explicar pro chat que não tem o user aqui e ele tem só que pegar o valor da tabela memo
     @GetMapping
     public ResponseEntity<?> getMessages(@RequestHeader("Authorization") String token, @RequestParam("user") Long userId) {
         boolean isAuthenticated = authClient.verifyToken(token, userId);
