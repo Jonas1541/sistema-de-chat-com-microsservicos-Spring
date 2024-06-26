@@ -17,6 +17,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import com.integracao_de_sistemas.receive_send_api.DTOs.AuthenticationDTO;
 import com.integracao_de_sistemas.receive_send_api.DTOs.LoginResponseDTO;
 import com.integracao_de_sistemas.receive_send_api.DTOs.MessageDTO;
+import com.integracao_de_sistemas.receive_send_api.DTOs.RegisterDTO;
 import com.integracao_de_sistemas.receive_send_api.DTOs.WorkerDTO;
 import com.integracao_de_sistemas.receive_send_api.clients.AuthClient;
 import com.integracao_de_sistemas.receive_send_api.clients.RecordClient;
@@ -34,6 +35,12 @@ public class MessageController {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterDTO registerRequest) {
+        ResponseEntity<?> registerResponse = authClient.register(registerRequest);
+        return registerResponse;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationDTO loginRequest) {
