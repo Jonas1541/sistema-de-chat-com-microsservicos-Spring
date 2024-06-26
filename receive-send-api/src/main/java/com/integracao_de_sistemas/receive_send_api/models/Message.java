@@ -2,23 +2,24 @@ package com.integracao_de_sistemas.receive_send_api.models;
 
 public class Message {
     
-    private Long userId;
+    private Long userIdSend;
+    private Long userIdReceive;
     private String message;
 
-    public Message() {
-    }
-    
-    public Message(Long userId, String message) {
-        this.userId = userId;
-        this.message = message;
+    public Long getUserIdSend() {
+        return userIdSend;
     }
 
-    public Long getUserId() {
-        return userId;
+    public void setUserIdSend(Long userIdSend) {
+        this.userIdSend = userIdSend;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public Long getUserIdReceive() {
+        return userIdReceive;
+    }
+
+    public void setUserIdReceive(Long userIdReceive) {
+        this.userIdReceive = userIdReceive;
     }
 
     public String getMessage() {
